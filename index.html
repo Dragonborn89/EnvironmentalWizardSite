@@ -37,25 +37,31 @@
   </div>
 </header>
 
+<div class="screen">
+  <div class="tube">
+    <canvas aria-hidden="true"></canvas>
+    <section class="hero">
+      <span class="eyebrow">Expert Technical Artist · Real-Time Rendering · Graphics Engineering</span>
+      <h1>Alexander Rybak</h1>
+      <p class="lede">I build rendering pipelines, shader systems, and the tools that let artists ship at scale. Currently an Expert Technical Artist at Firaxis Games, where I own the UE5 material and rendering pipeline. On my own time I'm building RetroEngine, a DirectX&nbsp;12 engine that physically simulates CRT displays.</p>
+      <div class="actions">
+        <a class="button" href="#video">Watch the video resume</a>
+        <a class="button ghost" href="#work">See the work</a>
+        <a class="button ghost" href="resume/">Resume</a>
+      </div>
+
+      <div class="firsts">
+        <div><span class="year">2017</span><p>Building VR/AR applications</p></div>
+        <div><span class="year">2019&ndash;22</span><p>nDisplay in early production, talking with Epic's engineers</p></div>
+        <div><span class="year">2022</span><p>Local LLM + RAG agents, before mainstream assistants</p></div>
+        <div><span class="year">2025</span><p>Custom DX12 engine with physical CRT simulation</p></div>
+      </div>
+    </section>
+    <span class="fps" aria-hidden="true"></span>
+  </div>
+</div>
+
 <main class="wrap">
-
-  <section class="hero">
-    <span class="eyebrow">Expert Technical Artist · Real-Time Rendering · Graphics Engineering</span>
-    <h1>Alexander Rybak</h1>
-    <p class="lede">I build rendering pipelines, shader systems, and the tools that let artists ship at scale. Currently an Expert Technical Artist at Firaxis Games, where I own the UE5 material and rendering pipeline. On my own time I'm building RetroEngine, a DirectX&nbsp;12 engine that physically simulates CRT displays.</p>
-    <div class="actions">
-      <a class="button" href="#video">Watch the video resume</a>
-      <a class="button ghost" href="#work">See the work</a>
-      <a class="button ghost" href="resume/">Resume</a>
-    </div>
-
-    <div class="firsts">
-      <div><span class="year">2017</span><p>Building VR/AR applications</p></div>
-      <div><span class="year">2019&ndash;22</span><p>nDisplay in early production, talking with Epic's engineers</p></div>
-      <div><span class="year">2022</span><p>Local LLM + RAG agents, before mainstream assistants</p></div>
-      <div><span class="year">2025</span><p>Custom DX12 engine with physical CRT simulation</p></div>
-    </div>
-  </section>
 
   <section id="video">
     <div class="section-head">
@@ -214,6 +220,7 @@
 </footer>
 
 <script src="site.js"></script>
+<script src="crt.js"></script>
 
 </body>
 </html>

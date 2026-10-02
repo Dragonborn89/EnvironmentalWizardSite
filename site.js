@@ -1,5 +1,4 @@
-// Click-to-load YouTube: show a thumbnail and only load the YouTube player
-// (and its cookies) when someone presses play.
+// youtube player only loads on click
 document.querySelectorAll(".video[data-yt]").forEach(function (box) {
   var link = box.querySelector("a");
   if (!link) return;

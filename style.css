@@ -39,7 +39,7 @@ img { max-width: 100%; display: block; }
   padding: 0 24px;
 }
 
-/* --- Labels (monospace, the RetroEngine family trait) --- */
+/* --- Labels --- */
 .eyebrow {
   font-family: var(--mono);
   font-size: 0.78rem;
@@ -133,7 +133,61 @@ img { max-width: 100%; display: block; }
 .button.ghost { background: transparent; color: var(--accent); }
 .button.ghost:hover { background: var(--accent-dim); }
 
-/* --- "Firsts" timeline strip --- */
+/* --- CRT hero --- */
+.screen {
+  max-width: var(--max);
+  margin: 28px auto 0;
+  padding: 0 24px;
+}
+
+.tube {
+  position: relative;
+  overflow: hidden;
+  border-radius: 34px / 30px;
+  background: #050506;
+  box-shadow:
+    0 0 0 10px #15171b,
+    0 0 0 11px #262a31,
+    0 30px 80px rgba(0, 0, 0, 0.6),
+    inset 0 0 60px rgba(0, 0, 0, 0.9);
+}
+
+.tube canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+.tube::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  border-radius: inherit;
+  background: repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
+  box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.75);
+}
+
+.tube.no-gl { background: radial-gradient(ellipse at center, #1a140c 0%, #050506 75%); }
+
+.tube .hero { position: relative; z-index: 1; padding: 88px 56px 64px; }
+.tube .hero h1 { text-shadow: 0 0 18px rgba(255, 179, 71, 0.35), 0 0 2px rgba(255, 200, 120, 0.6); }
+.tube .hero .lede { color: #e9dcc8; text-shadow: 0 0 10px rgba(255, 179, 71, 0.12); }
+.tube .firsts { margin-top: 48px; }
+.tube .firsts div { background: rgba(19, 21, 25, 0.72); }
+
+.tube .hero > * { transition: opacity 0.6s ease; }
+.tube.booting .hero > * { opacity: 0; }
+
+.tube .fps {
+  position: absolute;
+  right: 22px;
+  bottom: 14px;
+  z-index: 3;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: rgba(255, 179, 71, 0.45);
+  pointer-events: none;
+}
+
+/* --- Firsts --- */
 .firsts {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -171,7 +225,7 @@ section { padding: 64px 0; scroll-margin-top: 60px; }
 
 .section-head p { color: var(--muted); margin: 8px 0 0; max-width: 640px; }
 
-/* --- Video (click-to-load YouTube) --- */
+/* --- Video --- */
 .video {
   position: relative;
   aspect-ratio: 16 / 9;
@@ -378,7 +432,7 @@ figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 10px; }
 }
 .dimension-list b { display: block; font-family: var(--mono); font-size: 0.8rem; color: var(--accent); font-weight: 600; margin-bottom: 2px; }
 
-/* --- Archive (collapsible groups) --- */
+/* --- Archive --- */
 details.group {
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -468,6 +522,14 @@ details.group .inner > p { color: var(--muted); margin-top: 0; max-width: 720px;
   body { font-size: 16px; }
   .wrap { padding: 0 16px; }
   .hero { padding: 64px 0 40px; }
+  .screen { padding: 0 12px; margin-top: 20px; }
+  .tube { border-radius: 22px / 20px; }
+  .tube .hero { padding: 52px 22px 40px; }
+  .tube .firsts { grid-template-columns: 1fr 1fr; margin-top: 32px; }
+  .tube .firsts div { padding: 12px 14px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .tube .firsts div:nth-child(2n) { border-right: 0; }
+  .tube .firsts div:nth-child(n+3) { border-bottom: 0; }
+  .tube .firsts p { font-size: 0.82rem; }
   .site-header nav { gap: 14px; }
   .site-header nav a.hide-sm { display: none; }
   .firsts { grid-template-columns: 1fr; }
