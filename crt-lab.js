@@ -231,8 +231,13 @@ void main() {
   });
   canvas.addEventListener("pointerleave", function () { pointer = null; });
 
-  var pan = [0, 0], vel = [0, 0], drag = null;
+  var pan = [0, 0], vel = [0, 0], drag = null, drift = true, driftAmt = 1;
+  var driftInput = lab.querySelector('[name="drift"]');
+  driftInput.addEventListener("change", function () { drift = driftInput.checked; });
+  function setDrift(on) { driftInput.checked = drift = on; }
+
   canvas.addEventListener("pointerdown", function (e) {
+    if (!drift) return;
     drag = [e.clientX, e.clientY];
     canvas.setPointerCapture(e.pointerId);
   });
@@ -254,9 +259,9 @@ void main() {
     prev = now;
     resize();
 
-    if (!uploaded && img.complete && img.naturalWidth) {
+    if (!uploaded && source && (source.naturalWidth || source.width)) {
       gl.bindTexture(gl.TEXTURE_2D, sceneTex);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
       uploaded = true;
     }
 
@@ -292,7 +297,11 @@ void main() {
       pan[1] = Math.max(-0.1, Math.min(0.1, pan[1] + vel[1]));
       vel[0] *= 0.92; vel[1] *= 0.92;
     }
-    gl.uniform3f(emit.u.uCam, pan[0] + Math.sin(simTime * 0.5) * 0.05, pan[1] + Math.sin(simTime * 0.37 + 1) * 0.035, 1.3);
+    driftAmt += ((drift ? 1 : 0) - driftAmt) * Math.min(1, dt * 5);
+    gl.uniform3f(emit.u.uCam,
+      (pan[0] + Math.sin(simTime * 0.5) * 0.05) * driftAmt,
+      (pan[1] + Math.sin(simTime * 0.37 + 1) * 0.035) * driftAmt,
+      1 + 0.3 * driftAmt);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     ping = 1 - ping;
 
@@ -315,6 +324,42 @@ void main() {
     prev = performance.now();
     requestAnimationFrame(frame);
   }
+
+  // visitor's own image: cropped to the screen's aspect, never leaves the browser
+  var source = img;
+  var reset = lab.querySelector(".lab-reset");
+  var fileInput = lab.querySelector('.lab-upload input');
+
+  function useFile(file) {
+    if (!file || !/^image\//.test(file.type)) return;
+    var url = URL.createObjectURL(file);
+    var pic = new Image();
+    pic.onload = function () {
+      var c = document.createElement("canvas");
+      c.width = img.naturalWidth || 1497;
+      c.height = img.naturalHeight || 1081;
+      var k = Math.max(c.width / pic.width, c.height / pic.height);
+      var w = pic.width * k, h = pic.height * k;
+      c.getContext("2d").drawImage(pic, (c.width - w) / 2, (c.height - h) / 2, w, h);
+      URL.revokeObjectURL(url);
+      source = c;
+      uploaded = false;
+      reset.hidden = false;
+      setDrift(false);
+    };
+    pic.src = url;
+  }
+
+  fileInput.addEventListener("change", function () { useFile(fileInput.files[0]); fileInput.value = ""; });
+  reset.addEventListener("click", function () { source = img; uploaded = false; reset.hidden = true; setDrift(true); });
+  var screen = lab.querySelector(".lab-screen");
+  screen.addEventListener("dragover", function (e) { e.preventDefault(); screen.classList.add("drop"); });
+  screen.addEventListener("dragleave", function () { screen.classList.remove("drop"); });
+  screen.addEventListener("drop", function (e) {
+    e.preventDefault();
+    screen.classList.remove("drop");
+    useFile(e.dataTransfer.files[0]);
+  });
 
   new IntersectionObserver(function (entries) {
     visible = entries[0].isIntersecting;

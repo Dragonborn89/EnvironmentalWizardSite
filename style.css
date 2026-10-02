@@ -493,6 +493,16 @@ figcaption { color: var(--muted); font-size: 0.9rem; margin-top: 10px; }
 .lab-controls label { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
 .lab-controls output { color: var(--accent); text-align: right; }
 .lab-controls input { grid-column: 1 / -1; width: 100%; accent-color: var(--accent); }
+.lab-controls .lab-check { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; align-items: center; color: var(--text); }
+.lab-controls .lab-check input { grid-column: auto; width: auto; margin: 0; }
+.lab-controls .lab-check b { font-weight: 400; }
+.lab-controls .lab-check span { grid-column: 2; color: var(--muted); font-size: 0.72rem; }
+
+.lab-own { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 18px; }
+.lab-own span { color: var(--muted); font-size: 0.85rem; }
+.lab-own .button { cursor: pointer; }
+.lab-own [hidden] { display: none; }
+.lab-screen.drop { outline: 2px dashed var(--accent); outline-offset: -8px; }
 
 .lab-note { margin: 16px 0 0; color: var(--muted); font-size: 0.82rem; }
 .lab-fallback { display: none; }

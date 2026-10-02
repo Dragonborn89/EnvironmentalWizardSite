@@ -87,7 +87,7 @@
 
     <div class="section-head" style="margin-top:48px">
       <h2>Play with it</h2>
-      <p>A hands-on version that runs live in your browser, fed with the raw scene from above. Step through the stages, slow the beam down to watch it scan, swap the mask, and zoom in on the phosphors. Drag the picture to move the camera and leave trails.</p>
+      <p>A hands-on version that runs live in your browser, fed with the raw scene from above. Step through the stages, slow the beam down to watch it scan, swap the mask, and zoom in on the phosphors.</p>
     </div>
 
     <div class="lab">
@@ -111,7 +111,13 @@
           <label>Mask <output for="mask"></output><input type="range" name="mask" min="0" max="2" step="1" value="0"></label>
           <label>Persistence <output for="persistence"></output><input type="range" name="persistence" min="10" max="600" step="10" value="120"></label>
           <label>Zoom <output for="zoom"></output><input type="range" name="zoom" min="1" max="8" step="1" value="1"></label>
+          <label class="lab-check"><input type="checkbox" name="drift" checked><b>Camera drift</b><span>gives persistence motion to trail; drag to swing it</span></label>
         </div>
+      </div>
+      <div class="lab-own">
+        <label class="button ghost lab-upload">Try your own image<input type="file" accept="image/*" hidden></label>
+        <button class="button ghost lab-reset" type="button" hidden>Back to RetroEngine</button>
+        <span>or drop one on the screen. It stays on your computer; nothing is uploaded.</span>
       </div>
       <p class="lab-note">A simplified WebGL version written for this page, using textbook models of each stage. The engine does this in HLSL on DirectX 12, with more stages and its own tuning.</p>
       <p class="lab-fallback">Your browser doesn't support WebGL2, so the live demo can't run here.</p>
