@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Region Variants · Alexander Rybak</title>
+<meta name="description" content="A C++ tool that turns one authored map into every regional variant automatically, cutting map production effort by 62%.">
+<link rel="canonical" href="https://www.environmentalwizard.com/work/region-variants/">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Alexander Rybak">
+<meta property="og:title" content="Region variants from a single map">
+<meta property="og:description" content="One map, authored once, baked into every regional variant. 62% less map production effort.">
+<meta property="og:url" content="https://www.environmentalwizard.com/work/region-variants/">
+<meta property="og:image" content="https://www.environmentalwizard.com/assets/images/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@AnalogDreamDev">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body class="case">
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../../">alexander_rybak</a>
+    <nav>
+      <a href="../../#work">Work</a>
+      <a href="../../earlier-work/" class="hide-sm">Archive</a>
+      <a href="../../resume/">Resume</a>
+      <a href="../../#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="page-head">
+    <a class="back" href="../../#work">← Selected work</a>
+    <p class="eyebrow" style="margin-top:28px">Tools · C++ · Firaxis Games</p>
+    <h1>Region variants from a single map</h1>
+    <p class="lede">Artists dress one map, once. The tool bakes it into every regional variant automatically. Map production effort for regional maps dropped by 62%, and every environment artist on the team adopted it.</p>
+    <p class="nda">Built for an unannounced strategy title, so there are no screenshots. The diagrams are abstract.</p>
+  </section>
+
+  <div class="facts" style="margin-top:0">
+    <div><b>4&times; &rarr; 1.5&times;</b><span>authoring effort per level</span></div>
+    <div><b>&minus;62%</b><span>map production effort</span></div>
+    <div><b>1 &rarr; N</b><span>one authored map, every variant baked</span></div>
+    <div><b>100%</b><span>of environment artists adopted it</span></div>
+  </div>
+
+  <section>
+    <div class="section-head">
+      <span class="eyebrow">// 01 · The problem</span>
+      <h2>Same map, over and over</h2>
+    </div>
+    <div class="prose">
+      <p>Strategy maps often need the same layout in several regional looks: identical gameplay, completely different art.</p>
+      <p>The usual way to get there is to dress the blockout by hand once per region, as separate maps. With four regions, that's four full passes for every level.</p>
+    </div>
+    <div class="compare">
+      <div class="compare-col">
+        <span class="eyebrow">Before</span>
+        <div class="node">Blockout level</div>
+        <div class="fan">
+          <div class="node dim">Dress by hand<small>Region A</small></div>
+          <div class="node dim">Dress by hand<small>Region B</small></div>
+          <div class="node dim">Dress by hand<small>Region C</small></div>
+          <div class="node dim">Dress by hand<small>Region D</small></div>
+        </div>
+        <p class="tally">4 full passes &rarr; <b>4&times;</b></p>
+      </div>
+      <div class="compare-col">
+        <span class="eyebrow">After</span>
+        <div class="node hot">Dress one map<small>+ region rules on content</small></div>
+        <div class="fan">
+          <div class="node">Baked<small>Region A</small></div>
+          <div class="node">Baked<small>Region B</small></div>
+          <div class="node">Baked<small>Region C</small></div>
+          <div class="node">Baked<small>Region D</small></div>
+        </div>
+        <p class="tally">1 pass + rule markup &rarr; <b>1.5&times;</b></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="eyebrow">// 02 · How it works</span>
+      <h2>Rules on the content, not copies of the map</h2>
+    </div>
+    <div class="prose">
+      <p>Artists work in one default map. Any actor in it can carry a region rule that says, for each region, what should happen to it:</p>
+    </div>
+    <div class="rv-demo">
+      <svg viewBox="0 0 640 340" role="img" aria-label="Abstract map that changes per region">
+        <defs>
+          <symbol id="bA" overflow="visible"><rect x="-28" y="-18" width="56" height="40" rx="3" fill="currentColor"/><polygon points="-32,-18 0,-42 32,-18" fill="currentColor" opacity=".7"/></symbol>
+          <symbol id="bB" overflow="visible"><rect x="-32" y="-12" width="64" height="34" rx="3" fill="currentColor"/><path d="M-22 -12 A22 22 0 0 1 22 -12 Z" fill="currentColor" opacity=".7"/></symbol>
+          <symbol id="bC" overflow="visible"><rect x="-13" y="-44" width="26" height="66" rx="2" fill="currentColor"/><rect x="-19" y="-52" width="38" height="9" rx="2" fill="currentColor" opacity=".7"/></symbol>
+          <symbol id="st" overflow="visible"><rect x="-16" y="-4" width="32" height="18" rx="2" fill="currentColor"/><rect x="-21" y="-13" width="42" height="9" rx="2" fill="#ffb347" opacity=".85"/></symbol>
+          <symbol id="ca" overflow="visible"><rect x="-21" y="-10" width="42" height="15" rx="3" fill="currentColor"/><circle cx="-11" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="11" cy="9" r="6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+          <symbol id="rk" overflow="visible"><polygon points="-18,8 -12,-8 2,-14 16,-6 20,8 4,14" fill="currentColor" opacity=".4"/></symbol>
+          <symbol id="gh" overflow="visible"><rect x="-21" y="-13" width="42" height="27" rx="3" fill="none" stroke="#ff7b72" stroke-width="1.5" stroke-dasharray="4 3"/><path d="M-6 -5 L6 7 M6 -5 L-6 7" fill="none" stroke="#ff7b72" stroke-width="1.5" stroke-dasharray="4 3"/></symbol>
+        </defs>
+        <rect width="640" height="340" class="ground"/>
+        <path d="M-10 185 C 150 140, 320 235, 650 165" class="road"/>
+        <g class="obj" data-kind="building" transform="translate(95 80)"><use href="#bA" data-v="base"/><use href="#bB" data-v="b"/><use href="#bC" data-v="c"/></g>
+        <g class="obj" data-kind="building" transform="translate(275 70)"><use href="#bA" data-v="base"/><use href="#bB" data-v="b"/><use href="#bC" data-v="c"/></g>
+        <g class="obj" data-kind="building" transform="translate(480 85)"><use href="#bA" data-v="base"/><use href="#bB" data-v="b"/><use href="#bC" data-v="c"/></g>
+        <g class="obj" data-kind="stall" transform="translate(170 255)"><use href="#st" data-v="base"/><use href="#ca" data-v="cart"/><use href="#gh" data-v="none"/></g>
+        <g class="obj" data-kind="stall" transform="translate(345 275)"><use href="#st" data-v="base"/><use href="#ca" data-v="cart"/><use href="#gh" data-v="none"/></g>
+        <g class="obj" data-kind="stall" transform="translate(535 250)"><use href="#st" data-v="base"/><use href="#ca" data-v="cart"/><use href="#gh" data-v="none"/></g>
+        <g class="obj" data-kind="rock" transform="translate(60 290)"><use href="#rk" data-v="base"/></g>
+        <g class="obj" data-kind="rock" transform="translate(410 160)"><use href="#rk" data-v="base"/></g>
+        <g class="obj" data-kind="rock" transform="translate(600 300)"><use href="#rk" data-v="base"/></g>
+      </svg>
+      <div class="rv-bar">
+        <span class="eyebrow">Preview region</span>
+        <button data-region="A">A</button><button data-region="B">B</button><button data-region="C">C</button><button data-region="D">D</button>
+      </div>
+    </div>
+    <p class="caption">A mock of the editor preview: one map, flipped between regions. Abstract shapes, not real content.</p>
+    <div class="rules">
+      <table>
+        <thead><tr><th>Actor</th><th data-col="A">Region A</th><th data-col="B">Region B</th><th data-col="C">Region C</th><th data-col="D">Region D</th></tr></thead>
+        <tbody>
+          <tr><td>Building</td><td data-col="A">keep</td><td data-col="B" class="swap">swap &rarr; Building B</td><td data-col="C" class="swap">swap &rarr; Building C</td><td data-col="D">keep</td></tr>
+          <tr><td>Market stall</td><td data-col="A">keep</td><td data-col="B">keep</td><td data-col="C" class="drop">remove</td><td data-col="D" class="swap">swap &rarr; Cart</td></tr>
+          <tr><td>Rock cluster</td><td data-col="A">keep</td><td data-col="B">keep</td><td data-col="C">keep</td><td data-col="D">keep</td></tr>
+        </tbody>
+      </table>
+      <p class="caption">Swap to a different actor, keep it, or remove it, per region. Illustrative content.</p>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Defaults and overrides.</strong> Rules can live on an actor's defaults, so a whole kind of content behaves the same everywhere, or be set on a single instance in the level when one spot needs to differ.</li>
+        <li><strong>Preview in place.</strong> Artists stay in the one map and flip between regions in the editor, watching content swap live, without baking anything.</li>
+        <li><strong>Bake.</strong> The tool writes out one map per region, each tagged with its region.</li>
+        <li><strong>Change detection.</strong> When the default map or its rules change, the tool detects it and rebakes the variants, so they stay in sync with the source.</li>
+        <li><strong>Load.</strong> At runtime, gameplay data picks the map tagged for the current region.</li>
+      </ul>
+    </div>
+    <ol class="flow">
+      <li><b>Author</b>one map + rules</li>
+      <li><b>Preview</b>flip regions in the editor</li>
+      <li><b>Detect</b>what changed</li>
+      <li><b>Bake</b>one map per region</li>
+      <li><b>Load</b>by region tag</li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="eyebrow">// 03 · Design choice</span>
+      <h2>Why bake instead of swapping at runtime</h2>
+    </div>
+    <div class="prose">
+      <p>The tempting version swaps content when the level loads. I chose to bake instead:</p>
+      <ul>
+        <li><strong>Deterministic.</strong> A baked map is the same every time it loads, so a bug in one region reproduces the same way every time.</li>
+        <li><strong>Testable.</strong> QA can test each variant as its own map, and performance can be profiled per variant.</li>
+        <li><strong>Simple at runtime.</strong> The game just loads a map. All of the variant logic lives in the editor and the bake.</li>
+      </ul>
+      <p>The cost is that baked maps can go stale, which is why change detection matters. The other hard part was the editor preview, which has to reproduce the bake's result live while an artist works.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="eyebrow">// 04 · Result</span>
+      <h2>4&times; down to 1.5&times;</h2>
+    </div>
+    <div class="effort" data-reveal>
+      <div class="effort-row"><span>Before</span><div class="bar"><i style="--d:0s">Region A</i><i style="--d:.3s">Region B</i><i style="--d:.6s">Region C</i><i style="--d:.9s">Region D</i></div><b>4&times;</b></div>
+      <div class="effort-row"><span>After</span><div class="bar"><i class="hot" style="--d:1.3s">One map</i><i class="half" style="--d:1.6s">Rules</i></div><b>1.5&times;</b></div>
+    </div>
+    <div class="prose">
+      <p>The numbers are the hours artists spend per level. Dressing the one map is the 1&times;. The extra half is marking up content with its region rules, which is mostly a one-time cost per piece of content. Overall that's 62% less map production effort.</p>
+      <p>Every environment artist on the team adopted it. The rules are simple enough to understand at a glance: keep, swap, or remove.</p>
+    </div>
+    <p class="more"><a href="../../#work">← Back to selected work</a></p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Alexander Rybak · environmentalwizard.com</div>
+</footer>
+
+<script src="../../region-demo.js"></script>
+</body>
+</html>
