@@ -78,18 +78,19 @@ precision highp float;
 out vec4 o;
 uniform sampler2D uBuf;
 uniform vec2 uRes;
-uniform float uStage, uBlur;
+uniform float uStage, uBlur, uStep;
 
-// what the eye does at viewing distance: stripes blend into glow
+// what the eye does at viewing distance: average one full triad and
+// one scanline, so the stripes cancel instead of aliasing
 vec3 tap(vec2 uv) {
-  if (uBlur < .01) return texture(uBuf, uv).rgb;
-  vec2 d = uBlur * 1.2 / uRes;
-  vec3 c = texture(uBuf, uv).rgb * 4.;
-  c += (texture(uBuf, uv + vec2(d.x, 0.)).rgb + texture(uBuf, uv - vec2(d.x, 0.)).rgb
-      + texture(uBuf, uv + vec2(0., d.y)).rgb + texture(uBuf, uv - vec2(0., d.y)).rgb) * 2.;
-  c += texture(uBuf, uv + d).rgb + texture(uBuf, uv - d).rgb
-     + texture(uBuf, uv + vec2(d.x, -d.y)).rgb + texture(uBuf, uv + vec2(-d.x, d.y)).rgb;
-  return c / 16.;
+  vec3 c = texture(uBuf, uv).rgb;
+  if (uBlur < .01) return c;
+  vec2 d = uStep / uRes;
+  vec3 box = vec3(0.);
+  for (int y = -1; y <= 1; y++)
+    for (int x = -1; x <= 1; x++)
+      box += texture(uBuf, uv + vec2(x, y) * d).rgb;
+  return mix(c, box / 9., uBlur);
 }
 
 void main() {
@@ -162,15 +163,17 @@ void main() {
     return t;
   }
   var sceneTex = tex();
-  var hist = [], W = 0, H = 0, dpr = 1;
+  var hist = [], W = 0, H = 0, dpr = 1, unit = 3;
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     var r = canvas.getBoundingClientRect();
-    var w = Math.max(2, Math.round(r.width * dpr)), h = Math.max(2, Math.round(r.height * dpr));
+    var scale = Math.max(dpr, 720 / Math.max(1, r.height));   // small screens render at >= 240 lines and get scaled down
+    var w = Math.max(2, Math.round(r.width * scale)), h = Math.max(2, Math.round(r.height * scale));
     if (w === W && h === H) return;
     W = canvas.width = w;
     H = canvas.height = h;
+    unit = 3 * Math.max(1, Math.round(h / 720));
     hist.forEach(function (b) { gl.deleteTexture(b.t); gl.deleteFramebuffer(b.f); });
     hist = [0, 1].map(function () {
       var t = tex(w, h, halfFloat), f = gl.createFramebuffer();
@@ -227,7 +230,7 @@ void main() {
 
   canvas.addEventListener("pointermove", function (e) {
     var r = canvas.getBoundingClientRect();
-    pointer = [(e.clientX - r.left) * dpr, (r.bottom - e.clientY) * dpr];
+    pointer = [(e.clientX - r.left) * W / r.width, (r.bottom - e.clientY) * H / r.height];
   });
   canvas.addEventListener("pointerleave", function () { pointer = null; });
 
@@ -283,7 +286,7 @@ void main() {
     gl.uniform2f(emit.u.uRes, W, H);
     gl.uniform2f(emit.u.uFocus, focus[0], focus[1]);
     gl.uniform1f(emit.u.uZoom, zoom);
-    gl.uniform1f(emit.u.uUnit, 3 * Math.max(1, Math.round(dpr)));
+    gl.uniform1f(emit.u.uUnit, unit);
     gl.uniform1f(emit.u.uStage, stage);
     gl.uniform1f(emit.u.uMask, maskType);
     gl.uniform1f(emit.u.uBeamRate, rate);
@@ -312,7 +315,8 @@ void main() {
     gl.uniform1i(show.u.uBuf, 0);
     gl.uniform2f(show.u.uRes, W, H);
     gl.uniform1f(show.u.uStage, stage);
-    gl.uniform1f(show.u.uBlur, stage >= 3 ? 1.6 * dpr * Math.max(0, Math.min(1, (3 - zoom) / 2)) : 0);
+    gl.uniform1f(show.u.uBlur, stage >= 3 ? Math.max(0, Math.min(1, (3 - zoom) / 2)) : 0);
+    gl.uniform1f(show.u.uStep, unit / 3 * zoom);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     requestAnimationFrame(frame);
@@ -339,8 +343,18 @@ void main() {
       c.width = img.naturalWidth || 1497;
       c.height = img.naturalHeight || 1081;
       var k = Math.max(c.width / pic.width, c.height / pic.height);
-      var w = pic.width * k, h = pic.height * k;
-      c.getContext("2d").drawImage(pic, (c.width - w) / 2, (c.height - h) / 2, w, h);
+      var src = pic, sw = pic.width, sh = pic.height;
+      while (sw * k < sw / 2) {
+        var half = document.createElement("canvas");
+        half.width = Math.ceil(sw / 2);
+        half.height = Math.ceil(sh / 2);
+        half.getContext("2d").drawImage(src, 0, 0, half.width, half.height);
+        src = half; sw = half.width; sh = half.height; k *= 2;
+      }
+      var w = sw * k, h = sh * k;
+      var ctx = c.getContext("2d");
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(src, (c.width - w) / 2, (c.height - h) / 2, w, h);
       URL.revokeObjectURL(url);
       source = c;
       uploaded = false;
