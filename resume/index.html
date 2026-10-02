@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resume · Alexander Rybak</title>
+<meta name="description" content="Resume of Alexander Rybak, Expert Technical Artist: real-time rendering, graphics engineering, and simulation systems.">
+<link rel="canonical" href="https://www.environmentalwizard.com/resume/">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Alexander Rybak">
+<meta property="og:title" content="Resume · Alexander Rybak">
+<meta property="og:description" content="Expert Technical Artist · Real-Time Rendering · Graphics Engineering">
+<meta property="og:url" content="https://www.environmentalwizard.com/resume/">
+<meta property="og:image" content="https://www.environmentalwizard.com/assets/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@AnalogDreamDev">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../">alexander_rybak</a>
+    <nav>
+      <a href="../#work">Work</a>
+      <a href="../earlier-work/" class="hide-sm">Archive</a>
+      <a href="./">Resume</a>
+      <a href="../#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap resume">
+
+  <section class="page-head" style="padding-bottom:0">
+    <a class="back" href="../">← Home</a>
+    <p class="eyebrow" style="margin-top:28px">Real-Time Rendering · Graphics Engineering · Simulation Systems</p>
+    <h1>Alexander Rybak</h1>
+    <p class="lede">I'm a technical artist and graphics engineer with 8+ years of shipping real-time 3D software across AAA games, real-time simulation for military training, and AR/VR. I specialize in rendering pipeline architecture, HLSL and DX12 shaders, large-scale procedural systems, and GPU performance. I design systems that remove redundant work at scale, and I ship them on production schedules.</p>
+    <div class="actions">
+      <a class="button" href="mailto:EnvironmentalWizard@gmail.com">EnvironmentalWizard@gmail.com</a>
+      <a class="button ghost" href="#" onclick="window.print(); return false;">Print / save as PDF</a>
+      <a class="button ghost" href="https://x.com/AnalogDreamDev">X · @AnalogDreamDev</a>
+    </div>
+  </section>
+
+  <h2>Technical skills</h2>
+  <dl class="skills">
+    <dt>Rendering</dt><dd>DirectX 12, HLSL, PBR, forward/deferred pipelines, ray tracing (R&amp;D), Nanite, Lumen, nDisplay, HDR, frame rate optimization</dd>
+    <dt>Engines</dt><dd>Unreal Engine 5 (C++ &amp; Blueprint), Unity (C#), RetroEngine (custom DX12, solo-authored)</dd>
+    <dt>Languages</dt><dd>C++, C#, Python, HLSL, MaxScript, Windows Batch</dd>
+    <dt>Engine systems</dt><dd>ECS, scene serialization, terrain streaming, shared texture cache, GPU memory profiling, performance budgeting, deterministic simulation</dd>
+    <dt>DCC / tools</dt><dd>Houdini, 3ds Max, Maya, Substance Painter/Designer, Photoshop, ImGui, Git, Perforce</dd>
+    <dt>Profiling</dt><dd>PIX, RenderDoc, Unreal Insights, custom GPU debug tooling, low-end hardware validation</dd>
+    <dt>Domains</dt><dd>Real-time simulation, AR/VR, procedural world-building, Niagara VFX, asset pipeline tooling</dd>
+  </dl>
+
+  <h2>Independent engine development</h2>
+  <div class="entry">
+    <div class="entry-head"><h3>RetroEngine <span>· Solo author · <a href="https://retrogameengine.com/">retrogameengine.com</a></span></h3><span class="when">Oct 2025 &ndash; present</span></div>
+    <ul>
+      <li><b>Custom DirectX 12 renderer:</b> I built the full DX12 pipeline from scratch: command queues, descriptor heaps, resource barriers, root signatures, PSO management, and the HDR signal path. There's no engine abstraction layer, and the only third-party dependency is Dear ImGui.</li>
+      <li><b>Physical CRT simulation:</b> Simulates from first principles, per pixel: beam scanning, phosphor emission and decay, persistence, and glass diffusion. Energy-conserving temporal feedback means persistence never adds energy to the scene. It isn't a post-process filter.</li>
+      <li><b>Performance on constrained hardware:</b> Holds a stable 60 FPS on an AMD Radeon 660M, a 6-CU RDNA2 integrated GPU in the bottom 10&ndash;15% of gaming hardware. That's with the full CRT pipeline, terrain streaming, procedural generation, HDR rendering, and the editor all running, before GPU instancing, frustum culling, or LODs.</li>
+      <li><b>Shared-ownership texture cache:</b> I redesigned texture ownership from per-chunk allocation to a global shared cache with deterministic key normalization. A 4096&times;4096 terrain texture is no longer duplicated across every chunk, so memory stays flat no matter how many chunks are loaded.</li>
+      <li><b>ECS architecture:</b> A component-based entity system with strict GPU resource ownership, deterministic lifetimes, multi-scene loading, safe entity deletion, and serialization to parameter-only scene files.</li>
+      <li><b>Terrain streaming:</b> Chunks stream in around the camera on procedural terrain. Entire worlds regenerate deterministically from a seed and a small set of parameters.</li>
+      <li><b>Deterministic simulation time:</b> Pause, rewind, and replay at the engine level. Inputs and scene state scrub along a timeline for debugging and experiments.</li>
+      <li><b>Editor tooling:</b> A dockable ImGui scene editor with AABB object picking, snapping viewport gizmos, a chunk palette, thumbnails, a construction grid, and live material authoring. A GPU memory debug panel shows live texture memory, SRV usage, and instance counts.</li>
+      <li><b>Lighting:</b> Directional shadow maps, point lights, volumetric light shafts with depth-based color gradients, atmospheric fog in a single fullscreen-triangle pass, and a separate directional and ambient color model for predictable artistic control.</li>
+      <li><b>Coverage:</b> Featured on 80.lv and GenerationAmiga, and documented in a series of public dev logs.</li>
+    </ul>
+  </div>
+
+  <h2>Professional experience</h2>
+
+  <div class="entry">
+    <div class="entry-head"><h3>Expert Technical Artist <span>· Firaxis Games · Sparks, MD (remote)</span></h3><span class="when">Apr 2026 &ndash; present</span></div>
+    <ul>
+      <li><b>Region variant system:</b> I designed and built a system that lets artists author one world map with per-region content mappings, then bakes out every region variant automatically. Authoring went from 4&times; (one full map per region) to 1.5&times;, a 62% cut in map production effort, with no runtime randomness.</li>
+      <li><b>Building kit pipeline:</b> I redesigned how building kits are generated, cutting authoring time by 95%, from hours to minutes per kit.</li>
+      <li><b>Rendering pipeline:</b> I own and maintain the full UE5 material and rendering pipeline, including the parent material systems, the HLSL shader libraries, and the rendering standards for a team of up to 6 technical artists.</li>
+      <li><b>UE5 C++ systems:</b> Custom world-building and gameplay systems in C++ that extend UE5's rendering and simulation beyond what Blueprint supports.</li>
+      <li><b>Procedural systems:</b> I architected Houdini and UE5 PCG pipelines for large-scale environment production.</li>
+      <li><b>AI governance:</b> I worked with the Firaxis AI Governance board on ethical, non-generative AI-assisted workflows for real-time rendering.</li>
+      <li><b>Shipped:</b> Civilization VII (2025) and an unannounced title.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head"><h3>Senior Technical Artist <span>· Firaxis Games · Sparks, MD (remote)</span></h3><span class="when">Aug 2022 &ndash; Apr 2026</span></div>
+    <ul>
+      <li>Established the Technical Art department's scope and responsibilities for the project.</li>
+      <li><b>Shipped:</b> Marvel's Midnight Suns (2022).</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head"><h3>Senior Technical Artist <span>· Conflict Kinetics Corporation · Remote</span></h3><span class="when">Jan 2022 &ndash; Sep 2022</span></div>
+    <ul>
+      <li><b>Simulation development:</b> I led UE4/UE5 development of a large real-time training simulation. I was responsible for the animation Blueprints, the effects systems, and the visual fidelity of the simulation environment.</li>
+      <li><b>Pipeline:</b> I designed and maintained the 3D content pipeline and set delivery standards across the art, engineering, and client teams.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head"><h3>Principal Technical Artist <span>· Conflict Kinetics Corporation · Remote</span></h3><span class="when">Aug 2019 &ndash; Feb 2022</span></div>
+    <ul>
+      <li><b>Systems built:</b> Animation system architecture, a modular avatar and clothing system, vehicle systems and physics, a dynamic weather system, destructible assets and interactions, Niagara VFX, nDisplay integration, the UI system, and the audio system.</li>
+      <li><b>nDisplay:</b> I used nDisplay early in production, which included talking with Epic's engineers and helping shape its documentation.</li>
+      <li><b>R&amp;D:</b> I researched and prototyped mixed reality, ray tracing, and motion capture integration for future simulation features.</li>
+      <li><b>Documentation:</b> I wrote the full technical documentation: pipeline design, particle systems, lighting standards, and testing protocols.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head"><h3>VR/AR Technical Artist <span>· Quantified Design Solutions · Orlando, FL</span></h3><span class="when">Oct 2017 &ndash; Dec 2018</span></div>
+    <ul>
+      <li>I built 3D environments and interfaces for VR/AR training applications, and wrote the asset management pipeline and the documentation standards.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head"><h3>Associate Game Designer <span>· Goblin Bashing Studios LLC · Remote</span></h3><span class="when">Aug 2018 &ndash; Apr 2019</span></div>
+    <ul>
+      <li>I co-wrote the game design document and developed game mechanics for Perdition, an upcoming PC title.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-head"><h3>3D Artist <span>· Smart Information Flow Technologies (SIFT) · Remote</span></h3><span class="when">Dec 2016 &ndash; Oct 2017</span></div>
+    <ul>
+      <li>I created 3D assets for NASA simulation projects to strict visual fidelity and performance specifications, and did on-site photogrammetry to capture real-world content.</li>
+    </ul>
+  </div>
+
+  <h2>Shipped products</h2>
+  <ul>
+    <li><a href="https://store.steampowered.com/app/368260/Marvels_Midnight_Suns/">Marvel's Midnight Suns</a> (Firaxis, 2022)</li>
+    <li><a href="https://store.steampowered.com/app/1295660/Sid_Meiers_Civilization_VII/">Civilization VII</a> (Firaxis, 2025)</li>
+    <li><a href="https://store.steampowered.com/app/2694460/The_Quantum_Conflict/">The Quantum Conflict</a> (Steam, FlashPoint Games, 2024): co-developer on a two-person team · <a href="../work/quantum-conflict/">shader breakdowns</a></li>
+    <li><a href="https://store.steampowered.com/app/3616250/Cozy_Holes/">Cozy Holes</a> (Steam, FlashPoint Games, 2026): co-developer on a two-person team</li>
+  </ul>
+
+  <h2>Education</h2>
+  <div class="entry">
+    <div class="entry-head"><h3>M.S. Game Design <span>· Full Sail University · Salutatorian</span></h3><span class="when">2017</span></div>
+  </div>
+  <div class="entry">
+    <div class="entry-head"><h3>B.S. Game Art <span>· Full Sail University</span></h3><span class="when">2016</span></div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Alexander Rybak · environmentalwizard.com</div>
+</footer>
+
+</body>
+</html>

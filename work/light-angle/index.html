@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predicting Light Angles · Alexander Rybak</title>
+<meta name="description" content="Personal R&amp;D case study: training a CNN on synthetic Unity renders to predict directional light angles.">
+<link rel="canonical" href="https://www.environmentalwizard.com/work/light-angle/">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Alexander Rybak">
+<meta property="og:title" content="Predicting light angles with synthetic data">
+<meta property="og:description" content="Personal R&amp;D: a CNN trained on synthetic Unity renders to predict directional light angles.">
+<meta property="og:url" content="https://www.environmentalwizard.com/work/light-angle/">
+<meta property="og:image" content="https://www.environmentalwizard.com/assets/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@AnalogDreamDev">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../../">alexander_rybak</a>
+    <nav>
+      <a href="../../#work">Work</a>
+      <a href="../../earlier-work/" class="hide-sm">Archive</a>
+      <a href="../../resume/">Resume</a>
+      <a href="../../#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="page-head">
+    <a class="back" href="../../#work">← Selected work</a>
+    <p class="eyebrow" style="margin-top:28px">Personal R&amp;D · Unity · Python · Keras</p>
+    <h1>Predicting light angles with synthetic data</h1>
+    <p class="lede">Can a small neural network look at a rendered image and tell you where the light is coming from? I generated a training set from Unity renders and trained a convolutional network (CNN) to predict the angle of a directional light. The tool aims to help with lighting analysis and with matching virtual lighting in AR/VR.</p>
+  </section>
+
+  <section style="padding-top:8px" class="prose">
+    <h3>1 · Generating the data in Unity</h3>
+    <p>A script rotates a directional light around the Y axis and captures a frame at each step. I limited the range to −150° to 150°, where the camera can actually see reflections and shading change, and sampled it every 2.5°.</p>
+<pre><code>directionalLight.transform.rotation = Quaternion.Euler(0, angleY, 0);
+CaptureAndSaveImage(angleY);</code></pre>
+
+    <h3>2 · The network</h3>
+    <p>The network takes 128×128 images through convolution and max-pooling layers into dense layers, and outputs a single angle. Dropout and a learning rate schedule keep it from overfitting.</p>
+<pre><code>model = Sequential([
+    Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(128, 128, 3)),
+    MaxPooling2D(pool_size=(2, 2)),
+    Conv2D(64, kernel_size=(3, 3), activation='relu'),
+    MaxPooling2D(pool_size=(2, 2)),
+    Flatten(),
+    Dense(128, activation='relu'),
+    Dropout(0.5),
+    Dense(1)
+])</code></pre>
+    <p>I normalized the images to the range 0 to 1 and split them into training, validation, and test sets.</p>
+
+    <h3>3 · What went wrong, and the fixes</h3>
+    <ul>
+      <li><strong>Useless samples.</strong> Early datasets included light angles that produced no visible change from the camera's position, which only added noise. Restricting the range to −150° to 150° fixed both training speed and accuracy.</li>
+      <li><strong>Flat predictions.</strong> At first the model predicted nearly the same value for every input. Finer sampling, exponential learning rate decay, and early stopping got it learning the actual relationship.</li>
+    </ul>
+
+    <h3>4 · Results</h3>
+    <p>The model reached a <strong>validation mean absolute error of about 8.7</strong> on test images it had never seen. Plots of predicted against true angles show the outputs following the real values.</p>
+
+    <h3>Where it could go</h3>
+    <ul>
+      <li><strong>Lighting estimation for AR/VR:</strong> matching virtual lighting to a real scene so inserted objects sit naturally in it.</li>
+      <li><strong>Automated lighting analysis:</strong> checking in-game lighting setups and suggesting adjustments.</li>
+      <li><strong>Procedural lighting:</strong> adapting light to generated geometry and player movement.</li>
+      <li><strong>Next steps:</strong> more complex scenes, a wider range of materials, and domain adaptation to real photographs.</li>
+    </ul>
+
+    <p class="more"><a href="../../#work">← Back to selected work</a></p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Alexander Rybak · environmentalwizard.com</div>
+</footer>
+
+</body>
+</html>

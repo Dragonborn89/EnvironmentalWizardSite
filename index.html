@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alexander Rybak · Technical Artist</title>
+<meta name="description" content="Alexander Rybak: Expert Technical Artist working in real-time rendering and graphics engineering. Author of RetroEngine, a DirectX 12 engine with physical CRT simulation.">
+<link rel="canonical" href="https://www.environmentalwizard.com/">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Alexander Rybak">
+<meta property="og:title" content="Alexander Rybak · Technical Artist">
+<meta property="og:description" content="Expert Technical Artist · Real-Time Rendering · Graphics Engineering">
+<meta property="og:url" content="https://www.environmentalwizard.com/">
+<meta property="og:image" content="https://www.environmentalwizard.com/assets/images/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@AnalogDreamDev">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="./">alexander_rybak</a>
+    <nav>
+      <a href="#work">Work</a>
+      <a href="#video" class="hide-sm">Video</a>
+      <a href="#experience" class="hide-sm">Experience</a>
+      <a href="resume/">Resume</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="hero">
+    <span class="eyebrow">Expert Technical Artist · Real-Time Rendering · Graphics Engineering</span>
+    <h1>Alexander Rybak</h1>
+    <p class="lede">I build rendering pipelines, shader systems, and the tools that let artists ship at scale. Currently an Expert Technical Artist at Firaxis Games, where I own the UE5 material and rendering pipeline. On my own time I'm building RetroEngine, a DirectX&nbsp;12 engine that physically simulates CRT displays.</p>
+    <div class="actions">
+      <a class="button" href="#video">Watch the video resume</a>
+      <a class="button ghost" href="#work">See the work</a>
+      <a class="button ghost" href="resume/">Resume</a>
+    </div>
+
+    <div class="firsts">
+      <div><span class="year">2017</span><p>Building VR/AR applications</p></div>
+      <div><span class="year">2019&ndash;22</span><p>nDisplay in early production, talking with Epic's engineers</p></div>
+      <div><span class="year">2022</span><p>Local LLM + RAG agents, before mainstream assistants</p></div>
+      <div><span class="year">2025</span><p>Custom DX12 engine with physical CRT simulation</p></div>
+    </div>
+  </section>
+
+  <section id="video">
+    <div class="section-head">
+      <span class="eyebrow">// Video resume</span>
+      <h2>Down the Stack</h2>
+    </div>
+    <div class="video" data-yt="xUn1ie76l4g" data-title="Down the Stack">
+      <a href="https://www.youtube.com/watch?v=xUn1ie76l4g" aria-label="Play Down the Stack on YouTube">
+        <img src="https://i.ytimg.com/vi/xUn1ie76l4g/hqdefault.jpg" alt="Down the Stack video thumbnail" loading="lazy">
+        <span class="play"></span>
+      </a>
+    </div>
+    <p class="caption">A video resume, set to music.</p>
+  </section>
+
+  <section id="work">
+    <div class="section-head">
+      <span class="eyebrow">// Selected work</span>
+      <h2>Engines, shaders, and shipped games</h2>
+    </div>
+
+    <div class="cards">
+
+      <article class="card">
+        <img class="thumb" src="assets/images/retroengine.jpg" alt="RetroEngine rendering a scene through its CRT simulation">
+        <div class="body">
+          <span class="eyebrow">Personal engine · 2025&ndash;present</span>
+          <h3>RetroEngine</h3>
+          <p>A DirectX&nbsp;12 engine I'm writing solo from scratch. Its CRT simulation works from first principles, per pixel: beam scanning, phosphor emission and decay, persistence, and glass diffusion. It isn't a post-process filter.</p>
+          <ul>
+            <li>Stable 60&nbsp;FPS on a Radeon 660M integrated GPU, before instancing or culling</li>
+            <li>ECS, terrain streaming, shared-ownership texture cache</li>
+            <li>ImGui editor with a live GPU memory debug panel</li>
+          </ul>
+          <div class="tags"><span class="tag">DX12</span><span class="tag">HLSL</span><span class="tag">C++</span><span class="tag">Featured on 80.lv</span></div>
+          <div class="links"><a href="https://retrogameengine.com/">retrogameengine.com →</a></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <img class="thumb" src="assets/images/quantum-conflict.jpg" alt="The Quantum Conflict key art">
+        <div class="body">
+          <span class="eyebrow">Shipped · Steam · 2024</span>
+          <h3>The Quantum Conflict</h3>
+          <p>A space dogfighting game made by a two-person team; Josh Chapman and I split the work 50/50. FlashPoint Games published it. On my side: rendering and effects, plus content and Endless Mode.</p>
+          <ul>
+            <li>Six custom URP post-process effects in HLSL, unlocked at runtime as in-game "dimensions"</li>
+            <li>Raymarched Mandelbulb boss with soft shadows and fractal coloring</li>
+            <li>Screen-space lensing for black holes and wormholes, time-bubble fields, and a VHS-style rewind effect</li>
+          </ul>
+          <div class="tags"><span class="tag">Unity</span><span class="tag">URP</span><span class="tag">HLSL</span></div>
+          <div class="links"><a href="work/quantum-conflict/">Shader breakdowns →</a><a href="https://store.steampowered.com/app/2694460/The_Quantum_Conflict/">Steam →</a></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <img class="thumb" src="assets/images/cozy-holes.jpg" alt="Cozy Holes key art">
+        <div class="body">
+          <span class="eyebrow">Shipped · Steam · 2026</span>
+          <h3>Cozy Holes</h3>
+          <p>A relaxing digging adventure, also made by a two-person team; Josh Chapman and I split the work 50/50, and FlashPoint Games published it. On my side: world building, terrain carving, effects, and lighting.</p>
+          <ul>
+            <li>Staged, event-driven terrain carving on voxel terrain, with biome-aware texturing</li>
+            <li>Built most of the island: caverns, tunnels, lava pits, and temples</li>
+            <li>Fixed underground rendering (sky, weather, and water), plus the stylized shading and bloom controls</li>
+          </ul>
+          <div class="tags"><span class="tag">Unity 6</span><span class="tag">Shader Graph</span><span class="tag">VFX</span></div>
+          <div class="links"><a href="https://store.steampowered.com/app/3616250/Cozy_Holes/">Steam →</a></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="thumb text-thumb">
+          <div><code>#</code> synthetic data from Unity, -150° to 150° in 2.5° steps<br>light.rotation = Euler(0, angleY, 0)<br><code>#</code> 3-layer CNN, 128×128 input<br>validation MAE ≈ 8.7</div>
+        </div>
+        <div class="body">
+          <span class="eyebrow">Personal R&amp;D</span>
+          <h3>Tools that learn</h3>
+          <p>Side projects at the overlap of machine learning and real-time content.</p>
+          <ul>
+            <li>Local LLM and retrieval-augmented agents since 2022, before mainstream assistants</li>
+            <li>Predicting light direction with a CNN trained on synthetic data from Unity</li>
+          </ul>
+          <div class="tags"><span class="tag">Python</span><span class="tag">Local LLMs</span><span class="tag">RAG</span><span class="tag">Keras</span></div>
+          <div class="links"><a href="work/light-angle/">Light-angle case study →</a></div>
+        </div>
+      </article>
+
+    </div>
+
+    <p class="more">Older work, including UE4 and Houdini effects, environments, and props, is in the <a href="earlier-work/">archive →</a></p>
+  </section>
+
+  <section id="experience">
+    <div class="section-head">
+      <span class="eyebrow">// Experience</span>
+      <h2>Where I've worked</h2>
+    </div>
+    <div class="roles">
+      <div class="role">
+        <div class="when">Apr 2026 &ndash; present</div>
+        <div>
+          <h3>Expert Technical Artist <span>· Firaxis Games</span></h3>
+          <p>I own the UE5 material and rendering pipeline, including the parent material systems, the HLSL shader libraries, and the rendering standards for a team of up to 6 technical artists. I built a region variant system that cut map production effort by 62%, and a building kit pipeline that cut authoring time by 95%. Shipped Civilization&nbsp;VII and an unannounced title.</p>
+        </div>
+      </div>
+      <div class="role">
+        <div class="when">Aug 2022 &ndash; Apr 2026</div>
+        <div>
+          <h3>Senior Technical Artist <span>· Firaxis Games</span></h3>
+          <p>Established the Technical Art department's scope and responsibilities for the project. Shipped Marvel's Midnight Suns.</p>
+        </div>
+      </div>
+      <div class="role">
+        <div class="when">Jan 2022 &ndash; Sep 2022</div>
+        <div>
+          <h3>Senior Technical Artist <span>· Conflict Kinetics</span></h3>
+          <p>Led UE4/UE5 development of a real-time simulation for military training. Designed and maintained the content pipeline and delivery standards across the art, engineering, and client teams.</p>
+        </div>
+      </div>
+      <div class="role">
+        <div class="when">Aug 2019 &ndash; Feb 2022</div>
+        <div>
+          <h3>Principal Technical Artist <span>· Conflict Kinetics</span></h3>
+          <p>Built the animation architecture, a modular avatar and clothing system, vehicle physics, dynamic weather, destructibles, and Niagara VFX. Used nDisplay early in production, which included talking with Epic's engineers and helping shape its documentation.</p>
+        </div>
+      </div>
+      <div class="role">
+        <div class="when">Oct 2017 &ndash; Dec 2018</div>
+        <div>
+          <h3>VR/AR Technical Artist <span>· Quantified Design Solutions</span></h3>
+          <p>Built 3D environments and interfaces for VR/AR training applications, and wrote the asset management pipeline and the documentation standards.</p>
+        </div>
+      </div>
+    </div>
+    <p class="more">Education and earlier roles are on the <a href="resume/">full resume →</a></p>
+  </section>
+
+  <section id="contact">
+    <div class="contact">
+      <span class="eyebrow">// Contact</span>
+      <h2 style="margin:8px 0 0">Let's talk rendering.</h2>
+      <a class="email" href="mailto:EnvironmentalWizard@gmail.com">EnvironmentalWizard@gmail.com</a>
+      <div class="elsewhere">
+        <a href="https://retrogameengine.com/">RetroEngine</a>
+        <a href="https://analogdreamdev.substack.com/">Substack · Analog Dream Dev</a>
+        <a href="https://x.com/AnalogDreamDev">X · @AnalogDreamDev</a>
+        <a href="https://www.youtube.com/@AnalogDreamDev">YouTube · @AnalogDreamDev</a>      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Alexander Rybak · environmentalwizard.com</div>
+</footer>
+
+<script src="site.js"></script>
+
+</body>
+</html>

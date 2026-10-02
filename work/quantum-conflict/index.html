@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Quantum Conflict · Alexander Rybak</title>
+<meta name="description" content="Shader and rendering breakdowns from The Quantum Conflict: custom URP post-process dimensions, a raymarched Mandelbulb boss, and screen-space distortion effects.">
+<link rel="canonical" href="https://www.environmentalwizard.com/work/quantum-conflict/">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Quantum Conflict · Shader breakdowns">
+<meta property="og:description" content="Custom URP post-process dimensions, a raymarched Mandelbulb boss, and screen-space distortion effects.">
+<meta property="og:url" content="https://www.environmentalwizard.com/work/quantum-conflict/">
+<meta property="og:image" content="https://www.environmentalwizard.com/assets/images/quantum-conflict.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../../">alexander_rybak</a>
+    <nav>
+      <a href="../../#work">Work</a>
+      <a href="../../earlier-work/" class="hide-sm">Archive</a>
+      <a href="../../resume/">Resume</a>
+      <a href="../../#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="page-head">
+    <a class="back" href="../../#work">← Selected work</a>
+    <p class="eyebrow" style="margin-top:28px">Shipped · Steam · 2024 · Unity URP</p>
+    <h1>The Quantum Conflict</h1>
+    <p class="lede">A space dogfighting game made by a two-person team; Josh Chapman and I split the work 50/50, and FlashPoint Games published it on Steam. My side covered rendering and effects, plus content and Endless Mode. This page breaks down the graphics work.</p>
+    <div class="actions">
+      <a class="button" href="https://store.steampowered.com/app/2694460/The_Quantum_Conflict/">View on Steam</a>
+    </div>
+  </section>
+
+  <section style="padding-top:24px">
+    <div class="video" data-yt="FtRqxjgeHEY" data-title="The Quantum Conflict trailer">
+      <a href="https://www.youtube.com/watch?v=FtRqxjgeHEY" aria-label="Play The Quantum Conflict trailer on YouTube">
+        <img src="https://i.ytimg.com/vi/FtRqxjgeHEY/hqdefault.jpg" alt="The Quantum Conflict trailer thumbnail" loading="lazy">
+        <span class="play"></span>
+      </a>
+    </div>
+    <p class="caption">Launch trailer.</p>
+  </section>
+
+  <section id="dimensions">
+    <div class="section-head">
+      <span class="eyebrow">// 01 · Post-process dimensions</span>
+      <h2>Six URP render features, switched at runtime</h2>
+    </div>
+    <div class="prose">
+      <p>In Endless Mode, players unlock "dimensions" by reaching distance milestones. Each dimension changes how the whole game looks. I built every dimension as its own URP <code>ScriptableRendererFeature</code> with its own HLSL shader:</p>
+    </div>
+    <ul class="dimension-list">
+      <li><b>Pixel Provinces</b>Downsampled, point-filtered pixel art</li>
+      <li><b>Photo Negative</b>Full-frame color inversion</li>
+      <li><b>Quadruple Screen</b>The frame tiled into four quadrants</li>
+      <li><b>Chromatic Aberration</b>Offset red and blue channels</li>
+      <li><b>Glitch</b>Randomized, timed distortion bursts</li>
+      <li><b>Color Shift</b>Hue cycling in HSV space</li>
+    </ul>
+    <div class="prose">
+      <h3>How it's wired</h3>
+      <ul>
+        <li><strong>The passes.</strong> Each feature enqueues a pass after transparents. Using a command buffer, the pass blits the camera's color target through its material into a temporary render target, then copies the result back.</li>
+        <li><strong>Switching at runtime.</strong> URP doesn't expose its renderer feature list at runtime, so the controller reaches into the pipeline asset's renderer data and turns features on and off by name. Only one dimension is active at a time.</li>
+        <li><strong>Progression.</strong> A dimension manager ties each effect to a distance requirement. It awards XP when a dimension unlocks and saves the unlocks between sessions.</li>
+      </ul>
+
+      <h3>Pixel Provinces</h3>
+      <p>The pixel pass draws into a temporary target sized at the camera resolution divided by a pixelation factor, with point filtering. The shader snaps UVs to the grid and blends the result with the original frame, so the transition into the dimension can fade in instead of popping:</p>
+<pre><code>float2 pixelUV = floor(i.uv * _PixelationSize) / _PixelationSize;
+fixed4 pixelColor    = tex2D(_MainTex, pixelUV);
+fixed4 originalColor = tex2D(_MainTex, i.uv);
+return lerp(originalColor, pixelColor, _PixelationBlend);</code></pre>
+    </div>
+    <div class="pair">
+      <figure><img src="../../assets/images/qc/pixel-provinces-off.jpg" alt="Endless Mode with the default look" loading="lazy"><figcaption>Default</figcaption></figure>
+      <figure><img src="../../assets/images/qc/pixel-provinces-on.jpg" alt="The same frame with the Pixel Provinces dimension active" loading="lazy"><figcaption>Pixel Provinces</figcaption></figure>
+    </div>
+    <figure>
+      <div class="video" data-yt="oePx3yT-Tnc" data-title="The Quantum Conflict: Pixel Provinces">
+        <a href="https://www.youtube.com/watch?v=oePx3yT-Tnc" aria-label="Play the Pixel Provinces video on YouTube">
+          <img src="https://i.ytimg.com/vi/oePx3yT-Tnc/hqdefault.jpg" alt="Pixel Provinces video thumbnail" loading="lazy">
+          <span class="play"></span>
+        </a>
+      </div>
+      <figcaption>Pixel Provinces in motion.</figcaption>
+    </figure>
+  </section>
+
+  <section id="mandelbulb">
+    <div class="section-head">
+      <span class="eyebrow">// 02 · Raymarched boss</span>
+      <h2>The MandelBoss</h2>
+    </div>
+    <div class="prose">
+      <p>The final villain is an entity from another dimension, so it needed to look like nothing else in the game. Instead of a modeled mesh, it's a Mandelbulb fractal, raymarched in real time in a transparent shader. The same shader with different settings drives the boss and its projectiles.</p>
+      <ul>
+        <li><strong>Distance estimator.</strong> A power-<i>n</i> Mandelbulb in spherical coordinates, 7 iterations, with an orbit trap kept for coloring.</li>
+        <li><strong>Marching.</strong> 48 steps of over-relaxed sphere tracing that backs off when it overshoots. It stops once the error falls below about one pixel's footprint, so it spends steps only where they matter on screen.</li>
+        <li><strong>Lighting.</strong> Normals from central differences, plus soft shadows from a 50-step penumbra march.</li>
+        <li><strong>Animation.</strong> The fractal power oscillates between a minimum and a maximum while the shape rotates, so the boss never holds a stable form. Four color parameters, mixed through the orbit trap, set the look of each variant.</li>
+      </ul>
+    </div>
+    <figure>
+      <video src="../../assets/videos/qc-mandelbulb.mp4" poster="../../assets/videos/qc-mandelbulb.jpg" autoplay muted loop playsinline preload="metadata"></video>
+      <figcaption>The MandelBoss in a match.</figcaption>
+    </figure>
+  </section>
+
+  <section id="effects">
+    <div class="section-head">
+      <span class="eyebrow">// 03 · Effects</span>
+      <h2>Space that bends</h2>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Black holes and wormholes.</strong> A Shader Graph screen-space distortion that samples the scene color through a twirl and noise, so the space behind it appears to bend toward the center.</li>
+        <li><strong>Time bubbles.</strong> Fields drawn with scene depth, fresnel, and vertex displacement, to show where time runs differently.</li>
+        <li><strong>Rewind.</strong> A VHS-style shader for the rewind effect.</li>
+        <li><strong>VFX Graph.</strong> Effects for the arena border, hits, warp speed, and auras, plus the thrusters, explosions, and the boss's death.</li>
+      </ul>
+    </div>
+    <div class="pair">
+      <figure><video src="../../assets/videos/qc-gameplay-a.mp4" poster="../../assets/videos/qc-gameplay-a.jpg" autoplay muted loop playsinline preload="metadata"></video><figcaption>Wormhole distortion.</figcaption></figure>
+      <figure><video src="../../assets/videos/qc-gameplay-b.mp4" poster="../../assets/videos/qc-gameplay-b.jpg" autoplay muted loop playsinline preload="metadata"></video><figcaption>Gameplay.</figcaption></figure>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="eyebrow">// Also mine</span>
+      <h2>Content and Endless Mode</h2>
+    </div>
+    <div class="prose">
+      <p>On top of the graphics work, I built the ships, planets, nebula backgrounds, and asteroids, along with eight of the maps. I also made Endless Mode's distance tracking, spawning, rewards, and XP, plus the settings and UI work that came with shipping on Steam.</p>
+    </div>
+    <p class="more"><a href="../../#work">← Back to selected work</a></p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Alexander Rybak · environmentalwizard.com</div>
+</footer>
+
+<script src="../../site.js"></script>
+</body>
+</html>
