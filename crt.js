@@ -199,7 +199,7 @@ void main() {
     gl.uniform2f(display.u.uRes, W, H);
     gl.uniform1f(display.u.uTime, now / 1000);
     gl.uniform1f(display.u.uPower, power);
-    gl.uniform1f(display.u.uDpr, dpr);
+    gl.uniform1f(display.u.uDpr, Math.max(1, Math.round(dpr)));
     gl.drawArrays(gl.TRIANGLES, 0, 3);
 
     frames++;

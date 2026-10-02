@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RetroEngine · Alexander Rybak</title>
+<meta name="description" content="RetroEngine: a DirectX 12 engine built from scratch that physically simulates CRT displays. Includes an interactive breakdown of the CRT pipeline.">
+<link rel="canonical" href="https://www.environmentalwizard.com/work/retroengine/">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Alexander Rybak">
+<meta property="og:title" content="RetroEngine · How the CRT works">
+<meta property="og:description" content="A DirectX 12 engine built from scratch that physically simulates CRT displays, with an interactive breakdown of the pipeline.">
+<meta property="og:url" content="https://www.environmentalwizard.com/work/retroengine/">
+<meta property="og:image" content="https://www.environmentalwizard.com/assets/images/retroengine/blossom-tree.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@AnalogDreamDev">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../../">alexander_rybak</a>
+    <nav>
+      <a href="../../#work">Work</a>
+      <a href="../../earlier-work/" class="hide-sm">Archive</a>
+      <a href="../../resume/">Resume</a>
+      <a href="../../#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="page-head">
+    <a class="back" href="../../#work">← Selected work</a>
+    <p class="eyebrow" style="margin-top:28px">Personal engine · DirectX 12 · Day <span data-since="2025-10-31">—</span></p>
+    <h1>RetroEngine</h1>
+    <p class="lede">A DirectX&nbsp;12 engine I'm writing solo, from scratch. Its display is a CRT simulated from first principles: beam, phosphors, mask, glass. It isn't a filter laid over the image. It started as a renderer and has grown into a game engine, with an editor, streaming terrain, and a first-person game being built inside it.</p>
+    <div class="actions">
+      <a class="button" href="#lab">Try the CRT breakdown</a>
+      <a class="button ghost" href="https://retrogameengine.com/devlog/">Dev logs</a>
+      <a class="button ghost" href="https://retrogameengine.com/">retrogameengine.com</a>
+    </div>
+  </section>
+
+  <section style="padding-top:16px">
+    <figure style="margin:0">
+      <video src="../../assets/videos/retroengine/re-315days.mp4" poster="../../assets/videos/retroengine/re-315days.jpg" autoplay muted loop playsinline preload="metadata"></video>
+      <figcaption>Day 315: the game being built inside the engine, through the CRT.</figcaption>
+    </figure>
+    <div class="facts">
+      <div><b>Solo</b><span>renderer, editor, and tools, written by one person</span></div>
+      <div><b>DX12</b><span>no engine layer underneath; Dear ImGui is the only dependency</span></div>
+      <div><b>60 FPS</b><span>on a Radeon 660M integrated GPU</span></div>
+      <div><b>80.lv</b><span>featured, along with GenerationAmiga</span></div>
+    </div>
+  </section>
+
+  <section id="lab">
+    <div class="section-head">
+      <span class="eyebrow">// 01 · How the CRT works</span>
+      <h2>Inside the engine</h2>
+      <p>These are the engine's own debug views for a single frame, captured with the snapshot tool I built into the editor. Step through them in the order the engine runs them.</p>
+    </div>
+    <div class="viewer" data-viewer>
+      <div class="viewer-frame"><img src="../../assets/images/retroengine/viewsheet/final.jpg" alt="RetroEngine debug view" loading="lazy"></div>
+      <div class="lab-stages" role="group" aria-label="Engine stage">
+        <button data-src="../../assets/images/retroengine/viewsheet/scene.jpg" data-caption="The raw render: game, lighting, and UI in HDR, before any of the display. Everything after this is the CRT.">Scene</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/luminance.jpg" data-caption="How bright each pixel is. Brighter content widens the beam, so this drives how highlights bloom.">Luminance</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/stimulus.jpg" data-caption="The input softened into what the beam will actually draw.">Stimulus</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/energy.jpg" data-caption="Stimulus times beam: the energy landing on the screen, before the mask.">Energy</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/mask.jpg" data-caption="The phosphor mask, zoomed in. The engine can switch between aperture grille, shadow mask, and slot mask.">Mask</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/masked-energy.jpg" data-caption="Energy through the mask: only what lands on a phosphor survives.">Masked energy</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/emit.jpg" data-caption="What the phosphors give off this frame, after their non-linear response and a little color bleed between neighbors.">Emit</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/persistence.jpg" data-caption="This frame's light merged with the fading glow of earlier frames, then convergence and halation in the glass.">Persistence</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/pre-gamma.jpg" data-caption="Tube geometry, glass, vignette, and tonemapping, just before output gamma.">Pre-gamma</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/heatmap.jpg" data-caption="A debug view of energy as heat, for spotting hot spots and checking that nothing blows out.">Heat map</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/final.jpg" data-caption="The finished frame, as it appears on screen.">Final</button>
+      </div>
+      <p class="viewer-caption" aria-live="polite"></p>
+    </div>
+
+    <div class="section-head" style="margin-top:48px">
+      <h2>Play with it</h2>
+      <p>A hands-on version that runs live in your browser, fed with the raw scene from above. Step through the stages, slow the beam down to watch it scan, swap the mask, and zoom in on the phosphors. Drag the picture to move the camera and leave trails.</p>
+    </div>
+
+    <div class="lab">
+      <div class="lab-screen">
+        <canvas aria-label="Interactive CRT simulation"></canvas>
+        <img class="lab-src" src="../../assets/images/retroengine/viewsheet/scene-full.jpg" alt="" aria-hidden="true">
+      </div>
+      <div class="lab-stages" role="group" aria-label="Pipeline stage">
+        <button data-stage="1">1 Scene</button>
+        <button data-stage="2">2 Beam</button>
+        <button data-stage="3">3 Mask</button>
+        <button data-stage="4">4 Persistence</button>
+        <button data-stage="5">5 Tube</button>
+        <button data-stage="6">6 Convergence</button>
+        <button data-stage="7">7 Halation</button>
+      </div>
+      <div class="lab-body">
+        <div class="lab-copy" aria-live="polite"><h3></h3><p></p></div>
+        <div class="lab-controls">
+          <label>Beam speed <output for="beam"></output><input type="range" name="beam" min="0" max="100" step="1" value="100"></label>
+          <label>Mask <output for="mask"></output><input type="range" name="mask" min="0" max="2" step="1" value="0"></label>
+          <label>Persistence <output for="persistence"></output><input type="range" name="persistence" min="10" max="600" step="10" value="120"></label>
+          <label>Zoom <output for="zoom"></output><input type="range" name="zoom" min="1" max="8" step="1" value="1"></label>
+        </div>
+      </div>
+      <p class="lab-note">A simplified WebGL version written for this page, using textbook models of each stage. The engine does this in HLSL on DirectX 12, with more stages and its own tuning.</p>
+      <p class="lab-fallback">Your browser doesn't support WebGL2, so the live demo can't run here.</p>
+    </div>
+  </section>
+
+  <section id="performance">
+    <div class="section-head">
+      <span class="eyebrow">// 02 · Performance</span>
+      <h2>60 FPS on the bottom 10&ndash;15%</h2>
+    </div>
+    <div class="split">
+      <div class="prose">
+        <p>The AMD Radeon 660M is an integrated GPU with six RDNA2 compute units, in the bottom 10&ndash;15% of gaming hardware.</p>
+        <p>RetroEngine holds a stable 60 FPS on it with all of this running at once:</p>
+        <ul>
+          <li>The full CRT pipeline</li>
+          <li>Terrain streaming and procedural generation</li>
+          <li>HDR rendering</li>
+          <li>The editor</li>
+        </ul>
+        <p>That's before GPU instancing, frustum culling, or LODs, which are still ahead.</p>
+      </div>
+      <figure style="margin:0">
+        <img src="../../assets/images/retroengine/blossom-tree.jpg" alt="A blossoming tree in a ruined courtyard, rendered through the CRT simulation" loading="lazy">
+      </figure>
+    </div>
+  </section>
+
+  <section id="systems">
+    <div class="section-head">
+      <span class="eyebrow">// 03 · The engine around the CRT</span>
+      <h2>Everything else, also from scratch</h2>
+    </div>
+    <div class="grid-2 systems">
+      <div><h3>Shared-ownership texture cache</h3><p>Textures used to belong to the terrain chunk that loaded them, so one 4096&times;4096 terrain texture was duplicated in every chunk. A global cache with deterministic keys means each texture is loaded once and shared. Memory stays flat no matter how many chunks are loaded.</p></div>
+      <div><h3>ECS</h3><p>A component-based entity system with strict GPU resource ownership, deterministic lifetimes, multi-scene loading, safe deletion, and scenes saved as parameters only.</p></div>
+      <div><h3>Terrain streaming</h3><p>Chunks stream in around the camera. Whole worlds regenerate deterministically from a seed and a handful of parameters.</p></div>
+      <div><h3>Deterministic time</h3><p>Engine-level pause, rewind, and replay. Inputs and scene state scrub along a timeline, which makes debugging much easier.</p></div>
+      <div><h3>Editor</h3><p>A dockable ImGui editor: object picking, snapping gizmos, a chunk palette, live material authoring, and a GPU memory panel showing texture memory, SRVs, and instance counts.</p></div>
+      <div><h3>Lighting</h3><p>Directional shadow maps, point lights, volumetric light shafts, and fog in a single fullscreen pass, with separate directional and ambient color for predictable art direction.</p></div>
+    </div>
+    <div class="section-head" style="margin-top:48px">
+      <h2>Lighting, layer by layer</h2>
+      <p>The same frame, split into its lighting layers.</p>
+    </div>
+    <div class="viewer" data-viewer>
+      <div class="viewer-frame"><img src="../../assets/images/retroengine/viewsheet/lighting.jpg" alt="RetroEngine lighting debug view" loading="lazy"></div>
+      <div class="lab-stages" role="group" aria-label="Lighting layer">
+        <button data-src="../../assets/images/retroengine/viewsheet/ambient.jpg" data-caption="Ambient light only: the fill that keeps shadows readable.">Ambient</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/lit-side.jpg" data-caption="Surface color on the lit side, before shadowing.">Lit side color</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/light-mask.jpg" data-caption="Where the directional light actually reaches, after shadows.">Light mask</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/point-lights.jpg" data-caption="Point light contribution on its own.">Point lights</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/shafts.jpg" data-caption="Volumetric light shafts, with depth-based color.">Shafts</button>
+        <button data-src="../../assets/images/retroengine/viewsheet/lighting.jpg" data-caption="All lighting combined, without albedo.">Lighting only</button>
+      </div>
+      <p class="viewer-caption" aria-live="polite"></p>
+    </div>
+    <div class="debug-strip">
+      <figure><img src="../../assets/images/retroengine/viewsheet/distance.jpg" alt="Distance gradient debug view" loading="lazy"><figcaption>Distance gradient</figcaption></figure>
+      <figure><img src="../../assets/images/retroengine/viewsheet/saturation.jpg" alt="Saturation debug view" loading="lazy"><figcaption>Saturation amount</figcaption></figure>
+      <figure><img src="../../assets/images/retroengine/viewsheet/batch-colors.jpg" alt="Draw batch debug view" loading="lazy"><figcaption>Batch colors</figcaption></figure>
+    </div>
+    <figure>
+      <video src="../../assets/videos/retroengine/re-castle-walk.mp4" poster="../../assets/videos/retroengine/re-castle-walk.jpg" autoplay muted loop playsinline preload="none"></video>
+      <figcaption>The castle grounds.</figcaption>
+    </figure>
+  </section>
+
+  <section id="devlogs">
+    <div class="section-head">
+      <span class="eyebrow">// 04 · Dev logs</span>
+      <h2>Built in public</h2>
+      <p>Every step is written up on retrogameengine.com.</p>
+    </div>
+    <ol class="timeline">
+      <li><a href="https://retrogameengine.com/devlog/entry1.html"><b>01</b> Getting Started</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry2.html"><b>02</b> Solid Ground</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry3.html"><b>03</b> A New Dimension for 2D</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry4.html"><b>04</b> Foundations of the Editor</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry5.html"><b>05</b> Getting Real About This Update</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry6.html"><b>06</b> Dragging RetroEngine Out of the Void</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry7.html"><b>07</b> From Rendering Objects to Building Worlds</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry8.html"><b>08</b> After Scenes, Something Still Felt Off</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry9.html"><b>09</b> Merry Christmas!</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry10.html"><b>10</b> Time to Clean Up the CRT Pipeline</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry11.html"><b>11</b> The Can of Worms I Wasn't Expecting</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry12.html"><b>12</b> A Walkthrough of the Engine Today</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry13.html"><b>13</b> I Need Better Tools</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry14.html"><b>14</b> The Point of Lighting</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry15.html"><b>15</b> Iteration Speed Is the Real Feature</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry16.html"><b>16</b> From Concept to Contact</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry17.html"><b>17</b> Indoor Tools Exposed an Outdoor Problem</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry18.html"><b>18</b> Terrain Grew Up</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry19.html"><b>19</b> Seeing Through the Mist</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry20.html"><b>20</b> A Short Break From Deep Dives</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry21.html"><b>21</b> The Moment It Broke</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry22.html"><b>22</b> Quick Update</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry23.html"><b>23</b> The Big One</a></li>
+      <li><a href="https://retrogameengine.com/devlog/entry24.html"><b>24</b> Waking Up</a></li>
+    </ol>
+    <p class="more"><a href="../../#work">← Back to selected work</a></p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Alexander Rybak · environmentalwizard.com</div>
+</footer>
+
+<script src="../../site.js"></script>
+<script src="../../crt-lab.js"></script>
+</body>
+</html>
