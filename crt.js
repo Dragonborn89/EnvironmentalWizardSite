@@ -42,9 +42,9 @@ void main() {
 precision highp float;
 in vec2 vUv;
 out vec4 o;
-uniform sampler2D uTex;
+uniform sampler2D uTex, uVideo;
 uniform vec2 uRes;
-uniform float uTime, uPower, uDpr;
+uniform float uTime, uPower, uDpr, uVideoOn, uVideoAspect;
 
 vec2 bulge(vec2 uv) {
   uv = uv * 2. - 1.;
@@ -57,6 +57,12 @@ void main() {
   if (any(lessThan(uv, vec2(0.))) || any(greaterThan(uv, vec2(1.)))) { o = vec4(0., 0., 0., 1.); return; }
 
   vec3 c = 1. - exp(-texture(uTex, uv).rgb * 1.6);
+
+  // engine footage behind the text, cover-fit, darker on the left where the copy sits
+  float aspect = uRes.x / uRes.y;
+  vec2 vuv = (uv - .5) * vec2(min(1., aspect / uVideoAspect), min(1., uVideoAspect / aspect)) + .5;
+  vec3 video = texture(uVideo, vec2(vuv.x, 1. - vuv.y)).rgb;
+  c += video * uVideoOn * .42 * mix(.45, 1., smoothstep(.1, .85, uv.x));
   c += vec3(1., .7, .35) * max(.035 * (1. - length(uv - .5) * 1.2), 0.);
 
   float line = uv.y * uRes.y / (3. * uDpr);
@@ -155,6 +161,21 @@ void main() {
     try { sessionStorage.setItem("crt-booted", "1"); } catch (e) {}
   }
 
+  var video = null, videoTex = null, videoOn = 0;
+  if (!reduced && tube.dataset.video) {
+    video = document.createElement("video");
+    video.muted = video.loop = video.playsInline = true;
+    video.preload = "auto";
+    video.src = tube.dataset.video;
+    videoTex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, videoTex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array([0, 0, 0, 255]));
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  }
+
   var fpsEl = tube.querySelector(".fps");
   var visible = true, running = false, prev = 0, frames = 0, fpsAt = 0, ping = 0;
 
@@ -191,11 +212,23 @@ void main() {
     ping = 1 - ping;
     lastCursor = active ? cursor : null;
 
+    var hasFrame = video && video.readyState >= 2;
+    if (hasFrame) {
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, videoTex);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+      gl.activeTexture(gl.TEXTURE0);
+    }
+    videoOn += ((hasFrame && power > 0.5 ? 1 : 0) - videoOn) * Math.min(1, dt * 1.5);
+
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.viewport(0, 0, W, H);
     gl.useProgram(display.p);
     gl.bindTexture(gl.TEXTURE_2D, dst.t);
     gl.uniform1i(display.u.uTex, 0);
+    gl.uniform1i(display.u.uVideo, 1);
+    gl.uniform1f(display.u.uVideoOn, videoOn);
+    gl.uniform1f(display.u.uVideoAspect, video && video.videoWidth ? video.videoWidth / video.videoHeight : 16 / 9);
     gl.uniform2f(display.u.uRes, W, H);
     gl.uniform1f(display.u.uTime, now / 1000);
     gl.uniform1f(display.u.uPower, power);
@@ -212,6 +245,10 @@ void main() {
   }
 
   function start() {
+    if (video) {
+      if (visible && !document.hidden) video.play().catch(function () {});
+      else video.pause();
+    }
     if (running || !visible || document.hidden) return;
     running = true;
     prev = fpsAt = performance.now();
