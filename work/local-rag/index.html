@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Local RAG · Alexander Rybak</title>
+<meta name="description" content="Personal R&amp;D: a pipeline that turns Unreal Engine's documentation export into something a local, offline language model can answer questions from.">
+<link rel="canonical" href="https://www.environmentalwizard.com/work/local-rag/">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Alexander Rybak">
+<meta property="og:title" content="Teaching a local model the Unreal docs">
+<meta property="og:description" content="Turning half a million pages of Unreal Engine docs into something a local, offline language model can actually answer from.">
+<meta property="og:url" content="https://www.environmentalwizard.com/work/local-rag/">
+<meta property="og:image" content="https://www.environmentalwizard.com/assets/images/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@AnalogDreamDev">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../style.css">
+</head>
+<body class="case">
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="../../">alexander_rybak</a>
+    <nav>
+      <a href="../../#work">Work</a>
+      <a href="../../earlier-work/" class="hide-sm">Archive</a>
+      <a href="../../resume/">Resume</a>
+      <a href="../../#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="page-head">
+    <a class="back" href="../../#work">← Selected work</a>
+    <p class="eyebrow" style="margin-top:28px">Personal R&amp;D · Python · Local LLMs · since 2023</p>
+    <h1>Teaching a local model the Unreal docs</h1>
+    <p class="lede">I've been running language models on my own machine since 2023, fully offline. The project I'm proudest of takes the entire Unreal Engine 5.6 API documentation export, more than half a million HTML pages, and turns it into something a local model can actually answer questions from.</p>
+  </section>
+
+  <div class="term" aria-hidden="true">
+    <div class="term-bar"><i></i><i></i><i></i><span>step1_evaluate_html_docs.py</span></div>
+    <div class="term-lines"></div>
+  </div>
+  <p class="caption">Replaying real entries from the evaluator log and the cleaner's output.</p>
+
+  <section>
+    <div class="section-head">
+      <h2>Why bother</h2>
+    </div>
+    <div class="prose">
+      <p>Ask a general model about a specific Unreal API and it will happily make something up. Point it at the real docs and it can answer from the source, and I can check the answer. Running it locally means nothing leaves my PC, and it works with no internet at all.</p>
+      <p>The catch is that the docs aren't written for a model. Most of the export is navigation, menus, theme toggles, and stub pages with a title and nothing else.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>How I got here</h2>
+    </div>
+    <ol class="timeline steps">
+      <li><b>2023</b>Running private document Q&amp;A locally with open-source tools, first on the CPU, then a GPU build.</li>
+      <li><b>2024</b>My own Python scripts around local Llama models, pulling text out of PDF, Word, and HTML files for ingestion.</li>
+      <li><b>2025</b>A full pipeline for the Unreal Engine 5.6 docs, below.</li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>The pipeline</h2>
+      <p>Five Python scripts with files in between, so I can check the output of any stage before the next one runs.</p>
+    </div>
+    <ol class="flow">
+      <li><b>Evaluate</b>skip the junk pages</li>
+      <li><b>Clean</b>HTML to Markdown</li>
+      <li><b>Plan</b>group and size</li>
+      <li><b>Merge</b>bundle by topic</li>
+      <li><b>Embed &amp; test</b>tune retrieval</li>
+    </ol>
+    <div class="funnel">
+      <div><b data-count="537000" data-prefix="~">~537,000</b><span>HTML pages in the export</span></div>
+      <div><b data-count="201000" data-prefix="~">~201,000</b><span>kept after evaluation (37.5%), every skip logged with a reason</span></div>
+      <div><b data-count="423" data-prefix="~" data-suffix=" MB">~423 MB</b><span>of clean Markdown</span></div>
+      <div><b data-count="663">663</b><span>topic groups in the merge plan</span></div>
+      <div><b data-count="1374">1,374</b><span>merged documents, max 500&nbsp;KB each</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>One page, before and after</h2>
+      <p>The real "Has Tag" page from the export, and what the cleaner made of it. Struck-out lines are the noise it removes: 25 of 42 lines.</p>
+    </div>
+    <div class="beforeafter" data-reveal>
+      <div class="ba-col">
+        <span class="eyebrow">Raw page text</span>
+        <div class="ba-raw">
+          <div class="cut" style="--i:0">Has Tag | Unreal Engine 5.2 Documentation</div>
+          <div class="cut" style="--i:1">Unreal Engine 4.26 Documentation</div>
+          <div class="cut" style="--i:2">Unreal Engine 4.27 Documentation</div>
+          <div class="cut" style="--i:3">Unreal Engine 5.0 Documentation</div>
+          <div class="cut" style="--i:4">Unreal Engine 5.1 Documentation</div>
+          <div class="cut" style="--i:5">Unreal Engine 5.2 Documentation</div>
+          <div class="cut" style="--i:6">Unreal Engine 5.3 Documentation</div>
+          <div class="cut" style="--i:7">&gt;</div>
+          <div class="cut" style="--i:8">Unreal Engine Blueprint API Reference</div>
+          <div class="cut" style="--i:9">&gt;</div>
+          <div class="cut" style="--i:10">Gameplay Tags</div>
+          <div class="cut" style="--i:11">&gt;</div>
+          <div class="cut" style="--i:12">Has Tag</div>
+          <div class="cut" style="--i:13">Light Theme</div>
+          <div class="cut" style="--i:14">Dark Theme</div>
+          <div class="cut" style="--i:15">&gt;</div>
+          <div class="" style="--i:16">Has Tag</div>
+          <div class="cut" style="--i:17">Has Tag</div>
+          <div class="" style="--i:18">Check if the tag container has the specified tag</div>
+          <div class="" style="--i:19">Target is Blueprint Gameplay Tag Library</div>
+          <div class="cut" style="--i:20">Has Tag</div>
+          <div class="cut" style="--i:21">Tag Container</div>
+          <div class="cut" style="--i:22">Tag</div>
+          <div class="cut" style="--i:23">Exact Match</div>
+          <div class="cut" style="--i:24">Return Value</div>
+          <div class="" style="--i:25">Inputs</div>
+          <div class="" style="--i:26">Tag Container</div>
+          <div class="" style="--i:27">Gameplay Tag Container Structure (by ref)</div>
+          <div class="" style="--i:28">Container to check for the tag</div>
+          <div class="" style="--i:29">Tag</div>
+          <div class="" style="--i:30">Gameplay Tag Structure</div>
+          <div class="" style="--i:31">Tag to check for in the container</div>
+          <div class="" style="--i:32">Exact Match</div>
+          <div class="" style="--i:33">Boolean</div>
+          <div class="" style="--i:34">If true, the tag has to be exactly present, if false then TagContainer will include it&#x27;s parent tags while matching</div>
+          <div class="" style="--i:35">Outputs</div>
+          <div class="" style="--i:36">Return Value</div>
+          <div class="" style="--i:37">Boolean</div>
+          <div class="" style="--i:38">True if the container has the specified tag, false if it does not</div>
+          <div class="cut" style="--i:39">Help shape the future of Unreal Engine documentation! Tell us how we&#x27;re doing so we can serve you better.</div>
+          <div class="cut" style="--i:40">Take our survey</div>
+          <div class="cut" style="--i:41">Cancel</div>
+        </div>
+      </div>
+      <div class="ba-col">
+        <span class="eyebrow">Cleaned Markdown</span>
+<pre class="ba-md"><code># Has Tag
+
+_Path: BlueprintAPI/GameplayTags/Has Tag_
+
+Check if the tag container has the specified tag
+Target is Blueprint Gameplay Tag Library
+
+## Inputs
+- **Tag Container** (Gameplay Tag Container Structure (by ref)): Container to check for the tag
+- **Tag** (Gameplay Tag Structure): Tag to check for in the container
+- **Exact Match** (Boolean): If true, the tag has to be exactly present, if false then TagContainer will include it&#x27;s parent tags while matching
+
+## Outputs
+- **Return Value** (Boolean): True if the container has the specified tag, false if it does not</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>The other three steps</h2>
+    </div>
+    <div class="grid-2 systems">
+      <div><h3>Evaluate</h3><p>Before converting anything, a scanner reads every page and keeps or skips it: too few real words, or pure boilerplate, and it's out. Every skip is logged with a reason, which turned a guess into a plan.</p></div>
+      <div><h3>Plan</h3><p>Hundreds of thousands of tiny files are bad for retrieval, so pages get grouped by topic (everything under <code>BlueprintAPI_GameplayTags</code> is one group) and sized. The plan is a CSV, not files, so it's cheap to check and rerun.</p></div>
+      <div><h3>Merge</h3><p>Following the plan, in parallel. Each topic becomes one or more documents, capped at 500&nbsp;KB, with every original page kept as its own section with its source path.</p></div>
+      <div><h3>Embed &amp; test</h3><p>Everything runs locally: Llama 3.1 8B on the GPU for answers, bge-m3 embeddings, and a LanceDB vector store. I first shipped it in AnythingLLM in 2025, then rebuilt the index to fix what testing showed. Results below.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>What happened when I tested it</h2>
+      <p>The same questions, asked three ways. For each one: did retrieval hand the model the right doc page, and was the answer right? Click any cell to read the actual answer.</p>
+    </div>
+    <div class="score">
+      <div class="score-legend">
+        <span><b>No docs</b> the model on its own</span>
+        <span><b>Merged bundles</b> what I first shipped: pages merged into 1,374 big documents</span>
+        <span><b>One chunk per node</b> the rebuild: every node page indexed on its own</span>
+      </div>
+      <div class="score-table" role="table"></div>
+      <div class="score-detail" aria-live="polite"></div>
+    </div>
+    <p class="caption">Run on my machine in October 2026 with the original workspace settings: Llama 3.1 8B, bge-m3 embeddings, top 8 chunks, temperature 0.3. Same six questions for every column. Answers are trimmed.</p>
+    <div class="prose" style="margin-top:24px">
+      <p><strong>No docs: 0 of 6.</strong> Fluent, confident, and wrong every time, including made-up node names.</p>
+      <p><strong>Merged bundles: right page 4 of 6, right answer 3 of 6.</strong> This is what I first shipped in 2025. My chat logs from then show the same failure: broad questions landed, but a small node like Has Tag got buried inside a big bundle and never made the shortlist.</p>
+      <p><strong>One chunk per node: right page 6 of 6, right answer 4 of 6.</strong> I rebuilt the index with every node page as its own chunk, plus a keyword match on node names. The keyword match mattered: by vector search alone, Has Tag ranked #40, and with the name match it ranked #2.</p>
+      <p>The two misses are worth keeping. A broad "list every timer node" question did better with bundles, because a bundle keeps a whole category together, so granularity cuts both ways. And on Get Actor Location the right pages came back, but the model still misread them. Retrieval fixes "can't find it"; it doesn't fix "misread it". The next step is to retrieve at both levels, so specific questions get the node page and broad questions also get the category around it.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>What I took from it</h2>
+    </div>
+    <div class="prose">
+      <ul>
+        <li><strong>Most of the work is the data.</strong> Running a model locally is the easy part. Getting half a million pages into clean, well-named, sensibly sized pieces was the actual project.</li>
+        <li><strong>Test with real questions, then rebuild.</strong> Six questions and a scorecard showed exactly what was broken, which beats guessing at settings.</li>
+        <li><strong>Measure before you convert.</strong> Evaluating every page first, and logging every decision, showed where the real content was.</li>
+        <li><strong>Granularity matters, both ways.</strong> One node per chunk found every specific page; bundles buried them. But bundles handled the broad "list everything" question better.</li>
+        <li><strong>Small, checkable steps.</strong> The same reason RetroEngine has a debug view for every stage of its CRT.</li>
+      </ul>
+    </div>
+    <p class="more"><a href="../../#work">← Back to selected work</a></p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">© 2026 Alexander Rybak · environmentalwizard.com</div>
+</footer>
+
+<script src="../../rag-demo.js"></script>
+</body>
+</html>

@@ -49,8 +49,8 @@
     <a class="brand" href="./">alexander_rybak</a>
     <nav>
       <a href="#work">Work</a>
-      <a href="#video" class="hide-sm">Video</a>
       <a href="#experience" class="hide-sm">Experience</a>
+      <a href="#video" class="hide-sm">Video</a>
       <a href="resume/">Resume</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -73,7 +73,7 @@
       <div class="firsts">
         <div><span class="year">2017</span><p>Building VR/AR applications</p></div>
         <div><span class="year">2019&ndash;22</span><p>nDisplay in early production, talking with Epic's engineers</p></div>
-        <div><span class="year">2022</span><p>Local LLM + RAG agents, before mainstream assistants</p></div>
+        <div><span class="year">2023</span><p>Local LLM + RAG pipelines, running fully offline</p></div>
         <div><span class="year">2025</span><p>Custom DX12 engine with physical CRT simulation</p></div>
       </div>
     </section>
@@ -83,23 +83,8 @@
 
 <main class="wrap">
 
-  <section id="video">
-    <div class="section-head">
-      <span class="eyebrow">// Video resume</span>
-      <h2>Down the Stack</h2>
-    </div>
-    <div class="video" data-yt="xUn1ie76l4g" data-title="Down the Stack">
-      <a href="https://www.youtube.com/watch?v=xUn1ie76l4g" aria-label="Play Down the Stack on YouTube">
-        <img src="https://i.ytimg.com/vi/xUn1ie76l4g/hqdefault.jpg" alt="Down the Stack video thumbnail" loading="lazy">
-        <span class="play"></span>
-      </a>
-    </div>
-    <p class="caption">A video resume, set to music.</p>
-  </section>
-
   <section id="work">
     <div class="section-head">
-      <span class="eyebrow">// Selected work</span>
       <h2>Engines, shaders, and shipped games</h2>
     </div>
 
@@ -124,16 +109,17 @@
       <article class="card">
         <img class="thumb" src="assets/images/quantum-conflict-gameplay.jpg" alt="Ships fighting around a black hole in The Quantum Conflict">
         <div class="body">
-          <span class="eyebrow">Shipped · Steam · 2024</span>
+          <span class="eyebrow">Shipped · Steam, Xbox &amp; Windows · 2024</span>
           <h3>The Quantum Conflict</h3>
-          <p>A space dogfighting game made by a two-person team; Josh Chapman and I split the work 50/50. FlashPoint Games published it. On my side: rendering and effects, plus content and Endless Mode.</p>
+          <p>A space dogfighting game made by a two-person team and published by FlashPoint Games. I handled rendering and effects, plus content and Endless Mode.</p>
           <ul>
             <li>Six custom URP post-process effects in HLSL, unlocked at runtime as in-game "dimensions"</li>
             <li>Raymarched Mandelbulb boss with soft shadows and fractal coloring</li>
             <li>Screen-space lensing for black holes and wormholes, time-bubble fields, and a VHS-style rewind effect</li>
           </ul>
+          <p class="award">GameDevSG Summer 2024 Showcase winner</p>
           <div class="tags"><span class="tag">Unity</span><span class="tag">URP</span><span class="tag">HLSL</span></div>
-          <div class="links"><a href="work/quantum-conflict/">Shader breakdowns →</a><a href="https://store.steampowered.com/app/2694460/The_Quantum_Conflict/">Steam →</a></div>
+          <div class="links"><a href="work/quantum-conflict/">Shader breakdowns →</a><a href="https://store.steampowered.com/app/2694460/The_Quantum_Conflict/">Steam →</a><a href="https://www.xbox.com/en-US/games/store/the-quantum-conflict/9PHPQ3FQ02MG">Xbox →</a></div>
         </div>
       </article>
 
@@ -142,12 +128,13 @@
         <div class="body">
           <span class="eyebrow">Shipped · Steam · 2026</span>
           <h3>Cozy Holes</h3>
-          <p>A relaxing digging adventure, also made by a two-person team; Josh Chapman and I split the work 50/50, and FlashPoint Games published it. On my side: world building, terrain carving, effects, and lighting.</p>
+          <p>A relaxing digging adventure, from the same two-person team. I handled world building, terrain carving, effects, and lighting.</p>
           <ul>
             <li>Staged, event-driven terrain carving on voxel terrain, with biome-aware texturing</li>
             <li>Built most of the island: caverns, tunnels, lava pits, and temples</li>
             <li>Fixed underground rendering (sky, weather, and water), plus the stylized shading and bloom controls</li>
           </ul>
+          <blockquote class="press">&ldquo;A brilliant reminder of the simple joy of digging.&rdquo; <a href="https://www.vice.com/en/article/who-needs-soulslikes-when-youve-got-holeslikes-cozy-holes-evokes-a-game-about-digging-a-hole-but-makes-it-magical-demo-impressions/">VICE, on the demo</a></blockquote>
           <div class="tags"><span class="tag">Unity 6</span><span class="tag">Shader Graph</span><span class="tag">VFX</span></div>
           <div class="links"><a href="https://store.steampowered.com/app/3616250/Cozy_Holes/">Steam →</a></div>
         </div>
@@ -162,11 +149,11 @@
           <h3>Tools that learn</h3>
           <p>Side projects at the overlap of machine learning and real-time content.</p>
           <ul>
-            <li>Local LLM and retrieval-augmented agents since 2022, before mainstream assistants</li>
+            <li>Local LLMs and retrieval-augmented pipelines since 2023, running fully offline</li>
             <li>Predicting light direction with a CNN trained on synthetic data from Unity</li>
           </ul>
           <div class="tags"><span class="tag">Python</span><span class="tag">Local LLMs</span><span class="tag">RAG</span><span class="tag">Keras</span></div>
-          <div class="links"><a href="work/light-angle/">Light-angle case study →</a></div>
+          <div class="links"><a href="work/local-rag/">Local RAG case study →</a><a href="work/light-angle/">Light-angle case study →</a></div>
         </div>
       </article>
 
@@ -177,7 +164,6 @@
 
   <section id="experience">
     <div class="section-head">
-      <span class="eyebrow">// Experience</span>
       <h2>Where I've worked</h2>
     </div>
     <div class="roles">
@@ -220,9 +206,21 @@
     <p class="more">Education and earlier roles are on the <a href="resume/">full resume →</a></p>
   </section>
 
+  <section id="video">
+    <div class="section-head">
+      <h2>Down the Stack</h2>
+    </div>
+    <div class="video" data-yt="xUn1ie76l4g" data-title="Down the Stack">
+      <a href="https://www.youtube.com/watch?v=xUn1ie76l4g" aria-label="Play Down the Stack on YouTube">
+        <img src="https://i.ytimg.com/vi/xUn1ie76l4g/hqdefault.jpg" alt="Down the Stack video thumbnail" loading="lazy">
+        <span class="play"></span>
+      </a>
+    </div>
+    <p class="caption">A video resume, set to music.</p>
+  </section>
+
   <section id="contact">
     <div class="contact">
-      <span class="eyebrow">// Contact</span>
       <h2 style="margin:8px 0 0">Let's talk rendering.</h2>
       <a class="email" href="mailto:EnvironmentalWizard@gmail.com">EnvironmentalWizard@gmail.com</a>
       <div class="elsewhere">
